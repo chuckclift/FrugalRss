@@ -1,0 +1,7 @@
+http://www.zdnet.com/news/rss.xml
+
+http://www.phoronix.com/rss.php
+
+http://www.anandtech.com/rss/
+
+http://www.pcworld.com/index.rss
