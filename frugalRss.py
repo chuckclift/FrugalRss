@@ -22,13 +22,18 @@ metaData = []
 
 for html in siteHtml:
     items = html.split("<item>")
-    items = items[1:-1]  ##removing the first element (where ther are no items)
+
+    ##removing the area before the first item
+    items = items[1:-1]  
     siteData = []
 
     for it in items:
         title = it.split("<title>")[1].split("</title>")[0]
         link = it.split("<link>")[1].split("</link>")[0]
         siteData.append((title,link))
+
+    ##adding the list of links/titles to a larger list this makes
+    ## a 2d "matrix" that allows the sites to be separate
     metaData.append(siteData)
 sitesRemoved = 0
 
@@ -42,6 +47,9 @@ sitesRemoved = 0
 
 htmlData = []
 while metaData:
+
+    ## each iteration of the while loop it goes
+    ## through the current list of sites
     for site in metaData:
         if len(site) > 0:
             workingData = site.pop()
@@ -49,13 +57,14 @@ while metaData:
             html = html.text
             htmlData.append((workingData[0],html))
             
-            print(workingData[0])
 
             ##this prevents the program from hitting one
             ##server consecutively too quickly
             if len(metaData) > 2:
                 time.sleep(3)
-                
+
+        ## if this list(site) is finished, pop it from the
+        ## metaData list
         else:
             metaData.remove(site)
 
