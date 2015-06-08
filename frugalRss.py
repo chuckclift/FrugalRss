@@ -61,11 +61,10 @@ while metaData:
             if len(metaData) > 2:
                 time.sleep(3)
 
-        # if this list(site) is finished, pop it from the
-        # metaData list
-
+        # Removing empty lists
         else:
             metaData.remove(site)
+
 
 
 # extracting the text from the html in htmlData
