@@ -5,7 +5,8 @@ import requests
 import htmlParser
 
 with open("newsURL.txt") as f:
-    urls = f.read()
+    urls = f.read().split("\n")
+
 
 # accessing each of the urls of the rss web pages
 # these will be used to get the links to the articles
@@ -24,7 +25,6 @@ for html in siteHtml:
 
     items = items[1:-1]  ##removing the first element (where ther are no items)
     siteData = []
-
     for it in items:
         title = it.split("<title>")[1].split("</title>")[0]
         link = it.split("<link>")[1].split("</link>")[0]
@@ -43,10 +43,8 @@ sitesRemoved = 0
 # not accessing any one server consecutively
 # except at the end
 
-
 htmlData = []
 while metaData:
-
 
     # each iteration of the while loop it goes
     # through the current list of sites
@@ -54,6 +52,7 @@ while metaData:
         if len(site) > 0:
             workingData = site.pop()
             html = requests.get(workingData[1])
+            print(workingData[1])
             html = html.text
             htmlData.append((workingData[0],html))
 
@@ -70,19 +69,19 @@ while metaData:
 
 
 # extracting the text from the html in htmlData
-finalData = []
+articleText = ""
+headlineText = ""
 for i in htmlData:
-    article = ("<title>" + i[0] + "</title>" +
+    articleText = articleText + ("<title>" + i[0] + "</title>" +
                "<article>" + htmlParser.getParagraphs(i[1]) + "</articles>")
-    finalData.append((i[0], article))
+    headlineText = headlineText + i[0] + "\n"
 
-# writing the results to the text files
-headlines = open("headlines.txt", "w",  encoding="utf-8")
-articles = open("articles.txt", "w",  encoding="utf-8")
+# writing the results to files
+with open("articles.txt", "w", encoding="utf-8") as a:
+    a.write(articleText)
 
-for i in finalData:
-    headlines.write(i[0] + "\n")
-    articles.write(i[1] + "\n")
+with open("headlines.txt", "w", encoding="utf-8") as h:
+    h.write(headlineText)
 
-headlines.close()
-articles.close()
+
+
