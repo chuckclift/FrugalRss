@@ -4,12 +4,11 @@ import time
 import requests
 import htmlParser
 
-urlFile = open("newsURL.txt")
-urls = urlFile.read().split("\n")
-urlFile.close()
+with open("newsURL.txt") as f:
+    urls = f.read()
 
-##accessing each of the urls of the rss web pages
-##these will be used to get the links to the articles
+# accessing each of the urls of the rss web pages
+# these will be used to get the links to the articles
 siteHtml = []
 for i in urls:
     if len(i) > 0:
@@ -23,7 +22,7 @@ metaData = []
 for html in siteHtml:
     items = html.split("<item>")
 
-    ##removing the area before the first item
+    # removing the area before the first item
     items = items[1:-1]  
     siteData = []
 
@@ -32,53 +31,52 @@ for html in siteHtml:
         link = it.split("<link>")[1].split("</link>")[0]
         siteData.append((title,link))
 
-    ##adding the list of links/titles to a larger list this makes
-    ## a 2d "matrix" that allows the sites to be separate
+    # adding the list of links/titles to a larger list this makes
+    # a 2d "matrix" that allows the sites to be separate
     metaData.append(siteData)
 sitesRemoved = 0
 
 
 
-##getting the article html documents
-##the urls are shuffled so that the program is
-##not accessing any one server consecutively
-##except at the end 
+# getting the article html documents
+# the urls are shuffled so that the program is
+# not accessing any one server consecutively
+# except at the end
 
 
 htmlData = []
 while metaData:
 
-    ## each iteration of the while loop it goes
-    ## through the current list of sites
+    # each iteration of the while loop it goes
+    # through the current list of sites
     for site in metaData:
         if len(site) > 0:
             workingData = site.pop()
             html = requests.get(workingData[1])
             html = html.text
             htmlData.append((workingData[0],html))
-            
 
-            ##this prevents the program from hitting one
-            ##server consecutively too quickly
+            # this prevents the program from hitting one
+            # server consecutively too quickly
             if len(metaData) > 2:
                 time.sleep(3)
 
-        ## if this list(site) is finished, pop it from the
-        ## metaData list
+        # if this list(site) is finished, pop it from the
+        # metaData list
         else:
             metaData.remove(site)
 
 
-##extracting the text from the html in htmlData
+# extracting the text from the html in htmlData
 finalData = []
 for i in htmlData:
-    article = ( "<title>" + i[0] + "</title>" + 
-              "<article>" + htmlParser.getParagraphs(i[1]) + "</articles>")
-    finalData.append((i[0],article)) 
+    article = ("<title>" + i[0] + "</title>" +
+               "<article>" + htmlParser.getParagraphs(i[1]) + "</articles>")
+    finalData.append((i[0], article))
 
-##writing the results to the text files
-headlines = open("headlines.txt","w", encoding="utf-8")
-articles = open("articles.txt","w", encoding="utf-8")
+# writing the results to the text files
+headlines = open("headlines.txt", "w",  encoding="utf-8")
+articles = open("articles.txt", "w",  encoding="utf-8")
 
 for i in finalData:
     headlines.write(i[0] + "\n")
