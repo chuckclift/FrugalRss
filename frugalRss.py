@@ -10,30 +10,30 @@ with open("newsURL.txt") as f:
 
 # accessing each of the urls of the rss web pages
 # these will be used to get the links to the articles
-siteHtml = []
+site_html = []
 for i in urls:
     if len(i) > 0:
         container = requests.get(i)
         container = container.text
-        siteHtml.append(container)
+        site_html.append(container)
 
 
-metaData = []
+metadata = []
 
-for html in siteHtml:
+for html in site_html:
     items = html.split("<item>")
 
     items = items[1:-1]  ##removing the first element (where ther are no items)
-    siteData = []
+    site_data = []
     for it in items:
         title = it.split("<title>")[1].split("</title>")[0]
         link = it.split("<link>")[1].split("</link>")[0]
-        siteData.append((title,link))
+        site_data.append((title,link))
 
 
     # adding the list of links/titles to a larger list this makes
     # a 2d "matrix" that allows the sites to be separate
-    metaData.append(siteData)
+    metadata.append(site_data)
 sitesRemoved = 0
 
 
@@ -43,41 +43,42 @@ sitesRemoved = 0
 # not accessing any one server consecutively
 # except at the end
 
-htmlData = []
-while metaData:
+html_data = []
+while metadata:
 
     # each iteration of the while loop it goes
     # through the current list of sites
-    for site in metaData:
+    for site in metadata:
         if len(site) > 0:
             workingData = site.pop()
             html = requests.get(workingData[1])
             print(workingData[1])
             html = html.text
-            htmlData.append((workingData[0],html))
+            html_data.append((workingData[0],html))
 
             # this prevents the program from hitting one
             # server consecutively too quickly
-            if len(metaData) > 2:
+            if len(metadata) > 2:
                 time.sleep(3)
 
         # Removing empty lists
         else:
-            metaData.remove(site)
+            metadata.remove(site)
 
 
 
-# extracting the text from the html in htmlData
-articleText = ""
+# extracting the text from the html in html_data
+article_text = ""
 headlineText = ""
-for i in htmlData:
-    articleText = articleText + ("<title>" + i[0] + "</title>" +
+for i in html_data:
+    
+    article_text = article_text + ("<title>" + i[0] + "</title>" +
                "<article>" + htmlParser.get_paragraphs(i[1]) + "</articles>")
     headlineText = headlineText + i[0] + "\n"
 
 # writing the results to files
 with open("articles.txt", "w", encoding="utf-8") as a:
-    a.write(articleText)
+    a.write(article_text)
 
 with open("headlines.txt", "w", encoding="utf-8") as h:
     h.write(headlineText)
