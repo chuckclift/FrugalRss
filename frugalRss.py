@@ -23,7 +23,7 @@ metadata = []
 for html in site_html:
     items = html.split("<item>")
 
-    items = items[1:-1]  ##removing the first element (where ther are no items)
+    items = items[1:]  ##removing the first element (where ther are no items)
     site_data = []
     for it in items:
         title = it.split("<title>")[1].split("</title>")[0]
