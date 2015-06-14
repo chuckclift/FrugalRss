@@ -70,10 +70,12 @@ while metadata:
 # extracting the text from the html in html_data
 article_text = ""
 headlineText = ""
-for i in html_data:
-    
-    article_text = article_text + ("<title>" + i[0] + "</title>" +
-               "<article>" + htmlParser.get_paragraphs(i[1]) + "</articles>")
+for i in html_data:    
+    current_text =  htmlParser.get_paragraphs(i[1]) 
+    text_block =  "<article>" + current_text + "</articles>"
+    title_block =  "<title>" + i[0] + "</title>"
+ 
+    article_text = article_text + title_block + text_block + "\n"
     headlineText = headlineText + i[0] + "\n"
 
 # writing the results to files
