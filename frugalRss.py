@@ -72,7 +72,7 @@ articleText = ""
 headlineText = ""
 for i in htmlData:
     articleText = articleText + ("<title>" + i[0] + "</title>" +
-               "<article>" + htmlParser.getParagraphs(i[1]) + "</articles>")
+               "<article>" + htmlParser.get_paragraphs(i[1]) + "</articles>")
     headlineText = headlineText + i[0] + "\n"
 
 # writing the results to files

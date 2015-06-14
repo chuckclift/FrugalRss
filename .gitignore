@@ -1,3 +1,11 @@
+# The output files from the funciton
+headlines.txt
+articles.txt
+
+# the pyCache produced
+__pycache__
+
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
